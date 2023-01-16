@@ -2,7 +2,7 @@
 
 #include "BarrierOptionInputParser.hpp"
 //#include "Parser.hpp"
-#include "parser\include\jlparser\parser.hpp"
+#include "parser/include/jlparser/parser.hpp"
 //#include "jlparser\parser.hpp"
 
 namespace input_parsers

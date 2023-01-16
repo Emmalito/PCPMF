@@ -1,7 +1,7 @@
 #pragma once
 #include "BlackScholesModelInputParser.hpp"
 //#include "jlparser\parser.hpp"
-#include "parser\include\jlparser\parser.hpp"
+#include "parser/include/jlparser/parser.hpp"
 
 namespace input_parsers
 {

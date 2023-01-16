@@ -1,6 +1,7 @@
 #include "gtest/gtest.h"
 #include "pnl/pnl_matrix.h"
 #include "TestBlackScholesParametersHelper.hpp"
+#include "cmath"
 
 using namespace models;
 

@@ -1,5 +1,6 @@
 #include "TestBlackScholesModel.hpp"
 #include "BlackScholesModel.hpp"
+#include "cmath"
 
 using namespace models;
 
