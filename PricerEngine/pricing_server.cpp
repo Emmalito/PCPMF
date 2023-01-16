@@ -53,7 +53,7 @@ public:
         if (past == NULL) {
             return Status(grpc::StatusCode::INVALID_ARGUMENT, "Cannot read past");
         }
-        pnl_mat_print(past);
+        //pnl_mat_print(past);
         output->set_price(current_time);
         output->add_deltas(1.);
         output->add_deltas(2.);
