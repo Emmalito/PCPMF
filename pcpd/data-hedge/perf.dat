@@ -1,0 +1,15 @@
+model type                 <string>  bs
+option size                <int>     5
+spot                       <vector>  100
+maturity                   <float>   2
+volatility                 <vector>  0.2
+interest rate              <float>   0.03
+correlation                <float>   0.5
+option type                <string>  performance
+payoff coefficients        <vector>  0.2
+trend                      <vector>  0.04
+
+timestep number            <int>     12
+sample number              <long>    50000
+hedging dates number       <int>     96
+

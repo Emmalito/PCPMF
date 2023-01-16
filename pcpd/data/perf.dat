@@ -1,0 +1,21 @@
+# mc price: 1.258477
+# price std_dev: 0.000588
+# mc delta: 0.000001 -0.000001 -0.000001 -0.000002 0.000002
+# std_dev delta: 0.000001 0.000001 0.000001 0.000001 0.000001
+# CPU time : 0.224828
+
+
+
+model type          <string>  bs
+option size         <int>     5
+spot                <vector>  100
+maturity            <float>   2
+volatility          <vector>  0.2
+interest rate       <float>   0.03
+correlation         <float>   0.5
+option type         <string>  performance
+payoff coefficients <vector>  0.2
+
+timestep number     <int>     12
+sample number       <long>    50000
+
