@@ -7,9 +7,9 @@
 class Option
 {
   public:
-    double T_;        /// maturité
-    int nbTimeSteps_; /// nombre de pas de temps de discrétisation
-    int size_;        /// dimension du modèle, redondant avec BlackScholesModel::size_
+    double T;        /// maturité
+    int nbTimeSteps; /// nombre de pas de temps de discrétisation
+    int size;        /// dimension du modèle, redondant avec BlackScholesModel::size_
     /**
      * Calcule la valeur du payoff sur la trajectoire
      *
