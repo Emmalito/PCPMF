@@ -1,23 +1,22 @@
-#pragma once
+//
+// Created by lionel on 12/09/22.
+//
 
+#ifndef MC_PRICER_ASIANOPTION_H
+#define MC_PRICER_ASIANOPTION_H
 #include "Option.hpp"
-#include <iostream>
-#include <string>
-#include <stdio.h>
-#include <assert.h>
-#include "jlparser/parser.hpp"
 
-using namespace std;
+class AsianOption : public Option
+{
+  private:
+    double k_;   /// Strike
+    PnlVect* weights_; /// Poids des sous jacents de l'option; weights->size == path->n == _size
 
-namespace Couverture {
-    class AsianOption : public Option {
-        public:
-            double strike_;  /// Strike
-            string type_;    
-            PnlVect *lambdas_, *spots_;  /// Spots créés avec S0 only
-            AsianOption(double T, int nbTimeSteps, int size, PnlVect *lambdas, PnlVect *spots, double strike);
-            double payoff(const PnlMat* path);
-            virtual ~AsianOption();
-            // void toString();
-    };
-}   
+
+  public:
+    AsianOption(double T, int nbTimeSteps, int size, double k, PnlVect * weights);
+    ~AsianOption();
+    double payoff(const PnlMat* path);
+};
+
+#endif // MC_PRICER_ASIANOPTION_H

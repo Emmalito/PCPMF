@@ -20,8 +20,6 @@ if (NOT CMAKE_BUILD_TYPE)
 endif ()
 
 
-set(CMAKE_PREFIX_PATH /Documents/ENSIMAG/pcpd/build
-
 # Detect PNL
 find_package(Pnl REQUIRED)
 set(LIBS ${LIBS} ${PNL_LIBRARIES})
@@ -52,19 +50,14 @@ add_subdirectory(src/jlparser)
 # add_executable(mc-example src/mc_example.cpp)
 # target_link_libraries(mc-example jl_parser ${LIBS})
 
-add_executable(price0 src/testPriceO.cpp src/AsianOption.cpp src/BlackScholesModel.cpp src/MonteCarlo.cpp src/Option.cpp src/BasketOption.cpp src/PerfOption.cpp src/PricingResults.cpp src/PnlVectToJson.cpp)
+add_executable(barrier0 src/barrierMF0.cpp src/PricingResults.cpp src/BlackScholesModel.cpp src/AsianOption.cpp src/BasketOption.cpp src/PerformanceOption.cpp src/BarrierMFOption.cpp src/MonteCarlo.cpp src/PnlVectToJson.cpp)
+target_link_libraries(barrier0 jl_parser ${LIBS})
+
+add_executable(price0 src/price0.cpp src/PricingResults.cpp src/BlackScholesModel.cpp src/AsianOption.cpp src/BasketOption.cpp src/PerformanceOption.cpp src/MonteCarlo.cpp src/PnlVectToJson.cpp)
 target_link_libraries(price0 jl_parser ${LIBS})
 
-add_executable(testCall src/testCall.cpp src/AsianOption.cpp src/BlackScholesModel.cpp src/MonteCarlo.cpp src/Option.cpp src/BasketOption.cpp src/PerfOption.cpp)
-target_link_libraries(testCall jl_parser ${LIBS})
-
-
-
- add_executable(hedge src/testPnl.cpp src/AsianOption.cpp src/BlackScholesModel.cpp src/MonteCarlo.cpp src/Option.cpp src/BasketOption.cpp src/PerfOption.cpp src/PricingResults.cpp src/HedgingResults.cpp src/PnlVectToJson.cpp)
- target_link_libraries(hedge jl_parser ${LIBS})
-
-add_executable(priceT src/testPriceT.cpp src/AsianOption.cpp src/BlackScholesModel.cpp src/MonteCarlo.cpp src/Option.cpp src/BasketOption.cpp src/PerfOption.cpp src/PricingResults.cpp src/PnlVectToJson.cpp)
-target_link_libraries(priceT jl_parser ${LIBS})
+add_executable(pricet src/tPriceTest.cpp src/PricingResults.cpp src/BlackScholesModel.cpp src/AsianOption.cpp src/BasketOption.cpp src/PerformanceOption.cpp src/MonteCarlo.cpp src/PnlVectToJson.cpp)
+target_link_libraries(pricet jl_parser ${LIBS})
 
 # Print compiler flags
 get_directory_property(DirDefs COMPILE_DEFINITIONS)

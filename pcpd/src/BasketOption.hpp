@@ -1,22 +1,18 @@
 #pragma once
 
+#include "pnl/pnl_vector.h"
+#include "pnl/pnl_matrix.h"
 #include "Option.hpp"
-#include <iostream>
-#include <string>
-#include <stdio.h>
-#include <assert.h>
-#include "jlparser/parser.hpp"
 
-using namespace std;
 
-namespace Couverture {
-    class BasketOption : public Option {
-        public:
-            double strike_;  /// Strike
-            string type_;    
-            PnlVect *lambdas_, *spots_;  /// Spots créés avec S0 only
-            BasketOption(double T, int nbTimeSteps, int size, PnlVect *lambdas, PnlVect *spots, double strike);
-            double payoff(const PnlMat* path);
-            // virtual ~BasketOption();
-    };
-}   
+class BasketOption: public Option {
+  private:
+    PnlVect * weights_; /// tableau des poids des sous-jacents
+    double k_; /// strike de l'option
+
+  public:
+    BasketOption(double maturity,int nbTimeSteps, int size, double strike, PnlVect * poids);
+    ~BasketOption();
+    double payoff(const PnlMat* path);
+};
+
