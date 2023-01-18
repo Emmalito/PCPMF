@@ -6,23 +6,23 @@ using namespace std;
 
 BarrierMFOption::BarrierMFOption(double T, int nbTimeSteps, int size, double r, PnlVect *strikes, PnlVect *dates)
 {
-    T_ = T;
-    nbTimeSteps_ = nbTimeSteps;
-    size_ = size;
-    r_ = r;
-    strikes_ = strikes;
-    dates_ = dates;
+    T = T;
+    nbTimeSteps = nbTimeSteps;
+    size = size;
+    r = r;
+    strikes = strikes;
+    dates = dates;
 }
 
 double BarrierMFOption::payoff(const PnlMat* path) {
     double res = 0.0, Sti, Ki, exponential;
     int C_i_1 = 1, i = 0, ti = 0;
-    while (C_i_1 == 1 && i < size_)
+    while (C_i_1 == 1 && i < size)
     {
-        ti = (int) (pnl_vect_get(dates_, i) * (double) path->m / T_ );
+        ti = (int) (pnl_vecTget(dates, i) * (double) path->m/T);
         if (ti > path->m-1) ti = path->m-1;
-        exponential = exp(r_*(T_-pnl_vect_get(dates_, i)));
-        res = exponential * max(pnl_mat_get(path, ti, i) - pnl_vect_get(strikes_, i), 0.0);
+        exponential = exp(r*(T-pnl_vecTget(dates, i)));
+        res = exponential * max(pnl_maTget(path, ti, i) - pnl_vecTget(strikes, i), 0.0);
         if (res > 0) C_i_1 = 0;
         i++;
     }
@@ -30,6 +30,6 @@ double BarrierMFOption::payoff(const PnlMat* path) {
 }
 
 BarrierMFOption::~BarrierMFOption() {
-    pnl_vect_free(&strikes_);
-    pnl_vect_free(&dates_);
+    pnl_vecTfree(&strikes);
+    pnl_vecTfree(&dates);
 }
