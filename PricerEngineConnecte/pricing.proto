@@ -1,0 +1,35 @@
+syntax = "proto3";
+
+option csharp_namespace = "GrpcPricing.Protos";
+
+
+service GrpcPricer {
+  rpc PriceAndDeltas (PricingInput) returns (PricingOutput);
+  rpc Heartbeat (Empty) returns (ReqInfo);
+}
+
+/* All necessary info to invoke a pricer */
+message PricingInput {
+	repeated PastLines past = 1; // a sequence of lines containing the past data; represents a matrix
+	bool monitoringDateReached = 2; // if a new monitoring date has just been reached, then this parameter is true
+	double time = 3; // the mathematical time at which the pricer is invoked
+}
+
+message PastLines {
+	repeated double value = 1;
+}
+
+message PricingOutput {
+	double price = 1;
+	repeated double deltas = 2;
+	double priceStdDev = 3;
+	repeated double deltasStdDev = 4;
+}
+
+message Empty {}
+
+message ReqInfo {
+	double domesticInterestRate = 1;
+	double relativeFiniteDifferenceStep = 2;
+	int32 sampleNb = 3;
+}
