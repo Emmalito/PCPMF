@@ -25,7 +25,25 @@ public:
     PnlRng* rng;
 
     BlackScholesPricer(nlohmann::json &jsonParams);
+    BlackScholesPricer(
+        PnlMat* volatility_,
+        PnlVect* paymentDates_,
+        PnlVect* strikes_,
+        double interestRate_,
+        double fdStep_,
+        int nSamples_
+    );
+
     ~BlackScholesPricer();
-    void priceAndDeltas(const PnlMat *past, double currentDate, bool isMonitoringDate, double price, double &priceStdDev, PnlVect* &deltas, PnlVect* &deltasStdDev);
+    void priceAndDeltas(
+        const PnlMat *past,
+        double currentDate,
+        bool isMonitoringDate,
+        double &price,
+        double &priceStdDev,
+        PnlVect* &deltas,
+        PnlVect* &deltasStdDev
+    );
+
     void print();
 };

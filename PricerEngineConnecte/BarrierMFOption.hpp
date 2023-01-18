@@ -15,7 +15,7 @@ class BarrierMFOption : public Option {
         string type;    
         double r;
         PnlVect *strikes, *dates;
-        BarrierMFOption(double T, int nbTimeSteps, int size, double r, PnlVect *strikes, PnlVect *dates);
+        BarrierMFOption(double T_, int nbTimeSteps_, int size_, double r_, PnlVect *strikes_, PnlVect *dates_);
         double payoff(const PnlMat* path);
         virtual ~BarrierMFOption();
 };

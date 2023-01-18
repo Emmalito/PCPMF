@@ -81,7 +81,7 @@ public:
 };
 
 void RunServer(nlohmann::json &jsonParams) {
-    std::string server_address("0.0.0.0:50051");
+    std::string server_address("localhost:8080");//192.168.14.246:8080");// 0.0.0.0:50051");
     BlackScholesPricer pricer(jsonParams);
     pricer.print();
     GrpcPricerImpl service(pricer);

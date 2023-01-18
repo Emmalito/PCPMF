@@ -3,9 +3,6 @@
 #include "pricer.hpp"
 #include <ctime>
 
-// tata = new list<c++>
-// toto: grpc --> toto.add(tata)
-
 BlackScholesPricer::BlackScholesPricer(nlohmann::json &jsonParams)
 {
     jsonParams.at("VolCholeskyLines").get_to(volatility);
@@ -16,10 +13,32 @@ BlackScholesPricer::BlackScholesPricer(nlohmann::json &jsonParams)
     jsonParams.at("SampleNb").get_to(nSamples);
     nAssets = volatility->n;
     T = pnl_vect_get(paymentDates, nAssets-1);
-    BarrierMFOption opt(T, nAssets, nAssets, interestRate, strikes, paymentDates);
-    BSModel mod(nAssets, interestRate, volatility, &opt);
-    model = &mod;
-    PnlRng* rng = pnl_rng_create(PNL_RNG_MERSENNE);
+    opt = new BarrierMFOption (T, nAssets, nAssets, interestRate, strikes, paymentDates);
+    model = new BSModel(nAssets, interestRate, volatility);
+    rng = pnl_rng_create(PNL_RNG_MERSENNE);
+    pnl_rng_sseed(rng, time(NULL));
+}
+
+BlackScholesPricer::BlackScholesPricer(
+    PnlMat* volatility_,
+    PnlVect* paymentDates_,
+    PnlVect* strikes_,
+    double interestRate_,
+    double fdStep_,
+    int nSamples_
+)
+{
+    volatility = volatility_;
+    paymentDates = paymentDates_;
+    strikes = strikes_;
+    interestRate = interestRate_;
+    fdStep = fdStep_;
+    nSamples = nSamples_;
+    nAssets = volatility->n;
+    T = pnl_vect_get(paymentDates, nAssets-1);
+    opt = new BarrierMFOption(T, nAssets, nAssets, interestRate, strikes, paymentDates);
+    model = new BSModel(nAssets, interestRate, volatility);
+    rng = pnl_rng_create(PNL_RNG_MERSENNE);
     pnl_rng_sseed(rng, time(NULL));
 }
 
@@ -43,16 +62,16 @@ void BlackScholesPricer::print()
     pnl_mat_print(volatility);
 }
 
-void BlackScholesPricer::priceAndDeltas(const PnlMat *past, double currentDate, bool isMonitoringDate, double price, double &priceStdDev, PnlVect* &deltas, PnlVect* &deltasStdDev)
+void BlackScholesPricer::priceAndDeltas(const PnlMat *past, double currentDate, bool isMonitoringDate, double &price, double &priceStdDev, PnlVect* &deltas, PnlVect* &deltasStdDev)
 {
     price = 0.;
     priceStdDev = 0.;
     deltas = pnl_vect_create_from_zero(nAssets);
     deltasStdDev = pnl_vect_create_from_zero(nAssets);
-    
+
     double esp = 0, esp2 = 0;
-    double timestep = opt->T/opt->nbTimeSteps;
-    double const esperanceConstante = exp(-model->interestRate * (opt->T - currentDate)) / (2 * fdStep * nSamples);
+    double timestep = T/opt->nbTimeSteps;
+    double const esperanceConstante = exp(-model->interestRate * (T - currentDate)) / (2 * fdStep * nSamples);
     double const varianceConstante = esperanceConstante * esperanceConstante;
 
     PnlMat* path = pnl_mat_create(opt->nbTimeSteps + 1, nAssets);
@@ -62,10 +81,10 @@ void BlackScholesPricer::priceAndDeltas(const PnlMat *past, double currentDate, 
 
     for(int j=0; j<nSamples; j++)
     {
-        model->asset(path, past, currentDate, isMonitoringDate, opt->nbTimeSteps, rng);
+        model->asset(path, past, currentDate, isMonitoringDate, opt->nbTimeSteps, T, rng);
         payoff = opt->payoff(path);
         esp += payoff;
-        esp2 += payoff * payoff;
+        esp2 += abs(payoff * payoff);
         for (int d = 0; d < nAssets; d++)
         {
             model->shiftAsset(shiftPath, path, d, fdStep, currentDate, isMonitoringDate, timestep);
@@ -73,20 +92,20 @@ void BlackScholesPricer::priceAndDeltas(const PnlMat *past, double currentDate, 
             model->shiftAsset(shiftPath, path, d, -fdStep, currentDate, isMonitoringDate, timestep);
             payoff_sh_minus = opt->payoff(shiftPath);
             delta_d = payoff_sh_plus - payoff_sh_minus;
-            pnl_vect_set(deltas, pnl_vect_get(deltas, d) + delta_d, d);
-            pnl_vect_set(deltasStdDev, pnl_vect_get(deltasStdDev, d) + delta_d * delta_d, d);
+            pnl_vect_set(deltas, d, pnl_vect_get(deltas, d) + delta_d);
+            pnl_vect_set(deltasStdDev, d, pnl_vect_get(deltasStdDev, d) + abs(delta_d * delta_d));
         }
     }
-    esp /= nAssets;
-    esp2 /= nAssets;
-    price = exp(-model->interestRate * (opt->T - currentDate)) * esp;
-    priceStdDev = sqrt((exp(-2 * model->interestRate * (opt->T - currentDate)) * esp2 - price * price) / nAssets);
+    esp /= nSamples;
+    esp2 /= nSamples;
+    price = exp(-model->interestRate * (T - currentDate)) * esp;
+    priceStdDev = sqrt((exp(-2 * model->interestRate * (T - currentDate)) * esp2 - abs(price * price)) / nSamples);
 
     double fact;
     for (int d = 0; d < opt->size; d++){
         delta_d = pnl_vect_get(deltas, d);
-        pnl_vect_set(deltas, delta_d * esperanceConstante / pnl_mat_get(past, past->m - 1, d), d);
-        fact = varianceConstante * nAssets / (pnl_mat_get(past, past->m - 1, d) * pnl_mat_get(past, past->m - 1, d));
-        pnl_vect_set(deltasStdDev, sqrt((pnl_vect_get(deltasStdDev, d) * fact, d - delta_d * delta_d) / nAssets), d);
+        pnl_vect_set(deltas, d, delta_d * esperanceConstante / pnl_mat_get(past, past->m - 1, d));
+        fact = varianceConstante * nSamples / (pnl_mat_get(past, past->m - 1, d) * pnl_mat_get(past, past->m - 1, d));
+        pnl_vect_set(deltasStdDev, d, sqrt((pnl_vect_get(deltasStdDev, d) * fact, d - abs(delta_d * delta_d)) / nSamples));
     }
 }

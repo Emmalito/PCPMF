@@ -4,14 +4,14 @@
 
 using namespace std;
 
-BarrierMFOption::BarrierMFOption(double T, int nbTimeSteps, int size, double r, PnlVect *strikes, PnlVect *dates)
+BarrierMFOption::BarrierMFOption(double T_, int nbTimeSteps_, int size_, double r_, PnlVect *strikes_, PnlVect *dates_)
 {
-    T = T;
-    nbTimeSteps = nbTimeSteps;
-    size = size;
-    r = r;
-    strikes = strikes;
-    dates = dates;
+    T = T_;
+    nbTimeSteps = nbTimeSteps_;
+    size = size_;
+    r = r_;
+    strikes = strikes_;
+    dates = dates_;
 }
 
 double BarrierMFOption::payoff(const PnlMat* path) {
