@@ -11,18 +11,15 @@
     <None Remove="ClientGrpc\Protos\pricing.proto" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Compile Include="ClientGrpc\Protos\pricing.proto" />
-  </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Google.Protobuf.Tools" Version="3.21.12" />
+    <PackageReference Include="Google.Protobuf" Version="3.21.12" />
     <PackageReference Include="Grpc.Net.Client" Version="2.51.0" />
     <PackageReference Include="Grpc.Tools" Version="2.51.0">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="MultiCashFlow.Common" Version="1.0.0.4" />
+    <PackageReference Include="MultiCashFlow.Common" Version="1.0.0.6" />
   </ItemGroup>
 
 	<ItemGroup>

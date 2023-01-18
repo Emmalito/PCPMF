@@ -13,9 +13,9 @@ namespace HedgingEngine
         public List<DataFeed> DataFeeds { get; set; }
         public Portfolio.Portfolio HedgePortfolio { get; set; }
         public ClientGrpc.ClientGrpcPricing Client { get; set; }
-        private List<double> OptionPrices;
-        private List<double> PfValues;
-        private List<DateTime> Dates;
+        public List<double> OptionPrices;
+        public List<double> PfValues;
+        public List<DateTime> Dates;
 
         public Hedger(TestParameters testParameters, List<DataFeed> dataFeeds, string serverAddress)
         {
@@ -39,9 +39,9 @@ namespace HedgingEngine
         {
             DataFeed[] past = new DataFeed[1] { DataFeeds[0] };
             PricingOutput output = ComputePriceAndDelta(past);
-            int nbStock = output.Deltas.Length;
+            int nbStock = output.Deltas.ToArray().Length;
             HedgePortfolio = new Portfolio.Portfolio(nbStock, OptionPrices[0]);
-            HedgePortfolio.RebalancePortfolio(DataFeeds[0], output.Deltas);
+            HedgePortfolio.RebalancePortfolio(DataFeeds[0], output.Deltas.ToArray());
             PfValues.Add(HedgePortfolio.PfValue);
         }
 
@@ -52,8 +52,7 @@ namespace HedgingEngine
             MathDateConverter converter = new (TestParameters.NumberOfDaysInOneYear);
             double time = converter.ConvertToMathDistance(TestParameters.PayoffDescription.CreationDate, currentDate);
             bool monitoringDateReached = TestParameters.PayoffDescription.PaymentDates.Contains(currentDate);
-            PricingInput inputs = Client.ParamsToInput(past, monitoringDateReached, time);
-            PricingOutput output = Client.PriceandDeltas(inputs);
+            PricingOutput output = Client.PriceandDeltas(past, monitoringDateReached, time);
             OptionPrices.Add(output.Price);
             Dates.Add(currentDate);
             return output;
@@ -72,7 +71,7 @@ namespace HedgingEngine
                 PfValues.Add(HedgePortfolio.PfValue);
                 if (RebalanceOracle.RebalancingTime(dataFeed.Date))
                 {
-                    HedgePortfolio.RebalancePortfolio(dataFeed, output.Deltas);
+                    HedgePortfolio.RebalancePortfolio(dataFeed, output.Deltas.ToArray());
                 }
             }
         }

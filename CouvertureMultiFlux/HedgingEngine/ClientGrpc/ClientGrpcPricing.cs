@@ -14,9 +14,10 @@ namespace HedgingEngine.ClientGrpc
             Channel = GrpcChannel.ForAddress(serverAddress);
         }
 
-        public PricingOutput PriceandDeltas(PricingInput input)
+        public PricingOutput PriceandDeltas(DataFeed[] past, bool monitoringDateReached, double time)
         {
             var client = new GrpcPricer.GrpcPricerClient(Channel);
+            PricingInput input = ParamsToInput(past, monitoringDateReached, time);
             PricingOutput output = client.PriceAndDeltas(input);
             return output;
         }
@@ -28,17 +29,18 @@ namespace HedgingEngine.ClientGrpc
             return output;
         }
 
-        public PricingInput ParamsToInput(DataFeed[] past, bool monitoringDateReached, double time)
+        private PricingInput ParamsToInput(DataFeed[] past, bool monitoringDateReached, double time)
         {
-            IEnumerable<PastLines> matrixPast = new List<PastLines>();
-            foreach(var pastLine in past)
-            {
-                PastLines line = new PastLines();
-                line.Value.Add(pastLine);
-                matrixPast.Append(line);
-            }
             PricingInput input = new PricingInput();
-            input.Past.Value.Add(matrixPast);
+            foreach (var pastLine in past)
+            {
+                PastLines line = new();
+                foreach (double price in pastLine.SpotList.Values.ToArray())
+                {
+                    line.Value.Add(price);
+                }
+                input.Past.Add(line);
+            }
             input.MonitoringDateReached = monitoringDateReached;
             input.Time = time;
             return input;
