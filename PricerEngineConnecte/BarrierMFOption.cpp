@@ -30,6 +30,6 @@ double BarrierMFOption::payoff(const PnlMat* path) {
 }
 
 BarrierMFOption::~BarrierMFOption() {
-    //pnl_vect_free(&strikes);
-    //pnl_vect_free(&dates);
+    pnl_vect_free(&strikes);
+    pnl_vect_free(&dates);
 }

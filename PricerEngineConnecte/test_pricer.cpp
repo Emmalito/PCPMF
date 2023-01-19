@@ -13,9 +13,8 @@ int main(int argc, char **argv)
     pnl_vect_set(paymentDates, 0, 1.0);
     pnl_vect_set(strikes, 0, 10.);
 
-    double pp, pd;
-    int ii = pnl_cf_call_bs (8.0, 10., 1.0, interestRate, 0.0, 0.3, &pp, &pd);
-    // int ii = pnl_bs_call(8.0, 10., 1.0, interestRate, 0.0, 0.3);
+    double expectedPrice, expectedDeltas;
+    int i = pnl_cf_call_bs (8.0, 10., 1.0, interestRate, 0.0, 0.3, &expectedPrice, &expectedDeltas);
 
     PnlMat* past = pnl_mat_create(1, 1);
     pnl_mat_set_all(past, 8.0);
@@ -25,14 +24,17 @@ int main(int argc, char **argv)
     PnlVect *deltas, *deltaStdDev;
 
     BlackScholesPricer pricer(volatility, paymentDates, strikes, interestRate, fdStep, nSamples);
-    // pricer.print();
     pricer.priceAndDeltas(past, currentDate, isMonitoringDate, price, priceStdDev, deltas, deltaStdDev);
 
-    cout << "Prix en " << currentDate << " = " << price << endl;
+    cout << "Prix MonteCarlo(" << currentDate << ") = " << price << endl;
+    cout << "Deltas MonteCarlo(" << currentDate << ") :" << endl;
     pnl_vect_print(deltas);
 
-    cout << "pp = " << pp << endl;
-    cout << "pd = " << pd << endl;
+
+    cout << endl;
+    cout << "expectedPrice(" << currentDate << ") = " << expectedPrice << endl;
+    cout << "expectedDeltas(" << currentDate << ") :" << endl;
+    cout << expectedDeltas << endl;
 
     return 0;
 }

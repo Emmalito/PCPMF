@@ -47,6 +47,7 @@ BlackScholesPricer::~BlackScholesPricer()
     pnl_vect_free(&paymentDates);
     pnl_vect_free(&strikes);
     pnl_mat_free(&volatility);
+    pnl_rng_free(&rng);
 }
 
 void BlackScholesPricer::print()
@@ -108,4 +109,6 @@ void BlackScholesPricer::priceAndDeltas(const PnlMat *past, double currentDate, 
         fact = varianceConstante * nSamples / (pnl_mat_get(past, past->m - 1, d) * pnl_mat_get(past, past->m - 1, d));
         pnl_vect_set(deltasStdDev, d, sqrt((pnl_vect_get(deltasStdDev, d) * fact, d - abs(delta_d * delta_d)) / nSamples));
     }
+    pnl_mat_free(&path);
+    pnl_mat_free(&shiftPath);
 }
