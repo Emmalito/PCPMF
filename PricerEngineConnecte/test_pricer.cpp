@@ -19,7 +19,7 @@ int main(int argc, char **argv)
     PnlMat* past = pnl_mat_create(1, 1);
     pnl_mat_set_all(past, 8.0);
     double currentDate = 0.0;
-    bool isMonitoringDate = true;
+    bool isMonitoringDate = false;
     double price, priceStdDev;
     PnlVect *deltas, *deltaStdDev;
 
@@ -36,5 +36,11 @@ int main(int argc, char **argv)
     cout << "expectedDeltas(" << currentDate << ") :" << endl;
     cout << expectedDeltas << endl;
 
+    pnl_mat_free(&volatility);
+    pnl_mat_free(&past);    
+    pnl_vect_free(&paymentDates);
+    pnl_vect_free(&strikes);
+    pnl_vect_free(&deltas);
+    pnl_vect_free(&deltaStdDev);
     return 0;
 }

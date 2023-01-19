@@ -50,7 +50,7 @@ void BSModel::asset(PnlMat* path, const PnlMat* past, double currentDate, bool i
     }
 }
 
-void BSModel::asset_ti(int i, PnlMat* simulatedMarket, double timeStep, PnlVect* normal_vect, int offset)
+void BSModel::asset_ti(int i, PnlMat* path, double timeStep, PnlVect* normal_vect, int offset)
 {
     double rand_part, determ_part, res, sigma, sqrtTimeStep = sqrt(timeStep);
     for(int d = 0; d < nAssets; d++){
@@ -58,17 +58,15 @@ void BSModel::asset_ti(int i, PnlMat* simulatedMarket, double timeStep, PnlVect*
         sigma = pnl_vect_norm_two(&vol_d);
         determ_part = (interestRate - (sigma * sigma)/2) * timeStep;
         rand_part = sqrtTimeStep * pnl_vect_scalar_prod(&vol_d, normal_vect);
-        res = pnl_mat_get(simulatedMarket, i-1 + offset, d) * exp(determ_part + rand_part);
-        pnl_mat_set(simulatedMarket, i, d, res);
+        res = pnl_mat_get(path, i-1 + offset, d) * exp(determ_part + rand_part);
+        pnl_mat_set(path, i, d, res);
     }
 }
 
-void BSModel::shiftAsset(PnlMat* shift_path, const PnlMat* path, int d, double fdStep, double currentDate, bool isMonitoringDate, double timeStep)
+void BSModel::shiftAsset(PnlMat* shift_path, const PnlMat* path, int d, double fdStep, double currentDate, bool isMonitoringDate)
 {
-    // double k = (int) (currentDate / (double) timeStep);
-
+    pnl_mat_set_subblock(shift_path, path, 0, 0);
     int k = 0;
-    // double timeStep;
     while (currentDate > pnl_vect_get(discretisationDates, k))
     {
         k++;
@@ -76,10 +74,9 @@ void BSModel::shiftAsset(PnlMat* shift_path, const PnlMat* path, int d, double f
     }
 
     int start_index;
-    if (isMonitoringDate) start_index = k - 1;
-    else start_index = k;
-
     if (k == 0) start_index = 0;
+    else if (isMonitoringDate) start_index = k - 1;
+    else start_index = k;
 
     for (int i = start_index; i < path->m; i++)
     {

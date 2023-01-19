@@ -96,6 +96,17 @@ target_link_libraries(pricing_test
 )
 pnl_add_postbuild(pricing_test)
 
+add_executable(pricing_test2 test_pricer2.cpp pricer.cpp json_reader.cpp BSModel.cpp BarrierMFOption.cpp)
+target_link_libraries(pricing_test2
+    pricer_grpc_proto
+    ${_REFLECTION}
+    ${_GRPC_GRPCPP}
+    ${_PROTOBUF_LIBPROTOBUF}
+    ${PNL_LIBRARIES}
+    nlohmann_json::nlohmann_json
+)
+pnl_add_postbuild(pricing_test2)
+
 add_executable(test_json_reader json_reader.cpp test_json_reader.cpp)
 target_link_libraries(test_json_reader
     ${PNL_LIBRARIES}

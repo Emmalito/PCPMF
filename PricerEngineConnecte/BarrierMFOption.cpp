@@ -10,8 +10,8 @@ BarrierMFOption::BarrierMFOption(double T_, int nbTimeSteps_, int size_, double 
     nbTimeSteps = nbTimeSteps_;
     size = size_;
     r = r_;
-    strikes = strikes_;
-    dates = dates_;
+    strikes = pnl_vect_copy(strikes_);
+    dates = pnl_vect_copy(dates_);
 }
 
 double BarrierMFOption::payoff(const PnlMat* path) {
