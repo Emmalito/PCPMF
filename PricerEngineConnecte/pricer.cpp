@@ -75,8 +75,8 @@ void BlackScholesPricer::priceAndDeltas(const PnlMat *past, double currentDate, 
     double const esperanceConstante = exp(-model->interestRate * (T - currentDate)) / (2 * fdStep * nSamples);
     double const varianceConstante = esperanceConstante * esperanceConstante;
 
-    PnlMat* path = pnl_mat_create(opt->nbTimeSteps + 1, nAssets);
-    PnlMat* shiftPath = pnl_mat_create(opt->nbTimeSteps + 1, nAssets);
+    PnlMat* path = pnl_mat_create(opt->nbTimeSteps, nAssets);
+    PnlMat* shiftPath = pnl_mat_create(opt->nbTimeSteps, nAssets);
 
     double delta_d, payoff, payoff_sh_plus, payoff_sh_minus;
 
@@ -107,7 +107,7 @@ void BlackScholesPricer::priceAndDeltas(const PnlMat *past, double currentDate, 
         delta_d = pnl_vect_get(deltas, d);
         pnl_vect_set(deltas, d, delta_d * esperanceConstante / pnl_mat_get(past, past->m - 1, d));
         fact = varianceConstante * nSamples / (pnl_mat_get(past, past->m - 1, d) * pnl_mat_get(past, past->m - 1, d));
-        pnl_vect_set(deltasStdDev, d, sqrt((pnl_vect_get(deltasStdDev, d) * fact, d - abs(delta_d * delta_d)) / nSamples));
+        pnl_vect_set(deltasStdDev, d, sqrt(abs(pnl_vect_get(deltasStdDev, d) * fact - abs(delta_d * delta_d)) / nSamples));
     }
     pnl_mat_free(&path);
     pnl_mat_free(&shiftPath);

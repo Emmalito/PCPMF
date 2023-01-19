@@ -38,7 +38,7 @@ void BSModel::asset(PnlMat* path, const PnlMat* past, double currentDate, bool i
             asset_ti(past->m-1, path, timeStep, normal_vect, 1);
         }
         
-        for (int i = past->m; i <  nbTimeSteps+1; i++){
+        for (int i = past->m; i <  nbTimeSteps; i++){
             if (discretisationDates->size != 1)
                 timeStep = pnl_vect_get(discretisationDates, i) - pnl_vect_get(discretisationDates, i-1);
             else
