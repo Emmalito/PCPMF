@@ -4,6 +4,7 @@ using ParameterInfo.JsonUtils;
 using MarketDataGeneration;
 using FinancialApp.Hedger;
 using System.IO;
+using System.Text;
 
 namespace FinancialApp
 {
@@ -38,9 +39,9 @@ namespace FinancialApp
             hedger.Hedge(marketData.Skip(1).ToArray());
 
             //JSon creation
-            string JsonString = "";
+            string outputPath = "C:\\Users\\Emmalito\\OneDrive\\Bureau\\Projet_multi_flux\\PCPMF\\portfolio.json";
+            using (FileStream fs = File.Create(outputPath));
             OutputData output = new();
-            //using StreamWriter file = new("C:\\Users\\Emmalito\\OneDrive\\Bureau\\Projet_multi_flux\\PCPMF\\portfolio.json", false);
             for (int idx = 0; idx < hedger.PfValues.Count; idx++)
             {
                 output.OutputDate = hedger.Dates[idx];
@@ -49,10 +50,9 @@ namespace FinancialApp
                 output.DeltaStdDev = hedger.DeltasStdDev[idx];
                 output.Price = hedger.OptionPrices[idx];
                 output.PriceStdDev = hedger.OptionPricesStdDev[idx];
-                //JsonString += JsonIO.ToJson(output);
-                Console.WriteLine($"Diff Pf value et Option price = {output.Price - output.PortfolioValue}");
+                Console.WriteLine($"Diff Pf value et Option price = {hedger.PfValues[idx] - hedger.OptionPrices[idx]}");
+                File.AppendAllText(outputPath, JsonIO.ToJson(output));
             }
-            //file.Write(JsonString);
         }
     }
 }

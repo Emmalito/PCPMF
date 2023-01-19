@@ -9,7 +9,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{E4EA2490-EB4
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test", "test", "{553D97B1-7331-4704-952D-DEBC69AECB95}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TestHedgingEngine", "TestHedgingEngine\TestHedgingEngine.csproj", "{F3E9BC5C-562E-42FB-ACD7-CC79923AD60C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TestFinancialApp", "TestHedgingEngine\TestFinancialApp.csproj", "{F3E9BC5C-562E-42FB-ACD7-CC79923AD60C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
