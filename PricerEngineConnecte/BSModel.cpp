@@ -40,7 +40,7 @@ void BSModel::asset(PnlMat* path, const PnlMat* past, double currentDate, bool i
         
         for (int i = past->m; i <  nbTimeSteps+1; i++){
             if (discretisationDates->size != 1)
-                timeStep = pnl_vect_get(discretisationDates, i-1) - pnl_vect_get(discretisationDates, i-2);
+                timeStep = pnl_vect_get(discretisationDates, i) - pnl_vect_get(discretisationDates, i-1);
             else
                 timeStep = pnl_vect_get(discretisationDates, i-1) - currentDate;
             pnl_vect_rng_normal(normal_vect, nAssets, rng);
@@ -65,11 +65,21 @@ void BSModel::asset_ti(int i, PnlMat* simulatedMarket, double timeStep, PnlVect*
 
 void BSModel::shiftAsset(PnlMat* shift_path, const PnlMat* path, int d, double fdStep, double currentDate, bool isMonitoringDate, double timeStep)
 {
-    double k = (int) (currentDate / (double) timeStep);
+    // double k = (int) (currentDate / (double) timeStep);
+
+    int k = 0;
+    // double timeStep;
+    while (currentDate > pnl_vect_get(discretisationDates, k))
+    {
+        k++;
+        if (k >= discretisationDates->size) break;
+    }
 
     int start_index;
-    if (isMonitoringDate) start_index = k;
-    else start_index = k + 1;
+    if (isMonitoringDate) start_index = k - 1;
+    else start_index = k;
+
+    if (k == 0) start_index = 0;
 
     for (int i = start_index; i < path->m; i++)
     {
