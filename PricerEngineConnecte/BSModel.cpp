@@ -3,11 +3,12 @@
 
 using namespace std;
 
-BSModel::BSModel(int nAssets_, double interestRate_, PnlMat* volatility_)
+BSModel::BSModel(int nAssets_, double interestRate_, PnlMat* volatility_, PnlVect* discretisationDates_)
 {
     nAssets = nAssets_;
     interestRate = interestRate_;
     volatility = pnl_mat_copy(volatility_);
+    discretisationDates = pnl_vect_copy(discretisationDates_);
 }
 
 BSModel::~BSModel()
@@ -23,14 +24,25 @@ void BSModel::asset(PnlMat* path, const PnlMat* past, double currentDate, bool i
         PnlVect* normal_vect = pnl_vect_create(nAssets);
         pnl_vect_rng_normal(normal_vect, nAssets, rng);
 
+        int k = 0;
+        double timeStep;
+        while (currentDate > pnl_vect_get(discretisationDates, k))
+        {
+            k++;
+            if (k >= discretisationDates->size) break;
+        }
+        
         if (!isMonitoringDate)
         {
-            int k = (int) (currentDate * (double) nbTimeSteps / T);
-            double t_i = (double) (k + 1) * T / (double) nbTimeSteps;
-            asset_ti(past->m-1, path, t_i - currentDate, normal_vect, 1);
+            timeStep = pnl_vect_get(discretisationDates, k) - currentDate;
+            asset_ti(past->m-1, path, timeStep, normal_vect, 1);
         }
-        double timeStep = T / (double) nbTimeSteps;
-        for (int i = past->m; i <= nbTimeSteps; i++){
+        
+        for (int i = past->m; i <  nbTimeSteps+1; i++){
+            if (discretisationDates->size != 1)
+                timeStep = pnl_vect_get(discretisationDates, i-1) - pnl_vect_get(discretisationDates, i-2);
+            else
+                timeStep = pnl_vect_get(discretisationDates, i-1) - currentDate;
             pnl_vect_rng_normal(normal_vect, nAssets, rng);
             asset_ti(i, path, timeStep, normal_vect, 0);
         }

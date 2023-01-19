@@ -14,7 +14,7 @@ BlackScholesPricer::BlackScholesPricer(nlohmann::json &jsonParams)
     nAssets = volatility->n;
     T = pnl_vect_get(paymentDates, nAssets-1);
     opt = new BarrierMFOption (T, nAssets, nAssets, interestRate, strikes, paymentDates);
-    model = new BSModel(nAssets, interestRate, volatility);
+    model = new BSModel(nAssets, interestRate, volatility, paymentDates);
     rng = pnl_rng_create(PNL_RNG_MERSENNE);
     pnl_rng_sseed(rng, time(NULL));
 }
@@ -37,7 +37,7 @@ BlackScholesPricer::BlackScholesPricer(
     nAssets = volatility->n;
     T = pnl_vect_get(paymentDates, nAssets-1);
     opt = new BarrierMFOption(T, nAssets, nAssets, interestRate, strikes, paymentDates);
-    model = new BSModel(nAssets, interestRate, volatility);
+    model = new BSModel(nAssets, interestRate, volatility, paymentDates);
     rng = pnl_rng_create(PNL_RNG_MERSENNE);
     pnl_rng_sseed(rng, time(NULL));
 }

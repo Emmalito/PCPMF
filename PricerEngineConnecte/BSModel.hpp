@@ -11,8 +11,9 @@ class BSModel
         int nAssets;
         double interestRate;
         PnlMat* volatility;
+        PnlVect* discretisationDates;
 
-        BSModel(int nAssets_, double interestRate_, PnlMat* volatility_);
+        BSModel(int nAssets_, double interestRate_, PnlMat* volatility_, PnlVect* discretisationDates_);
         ~BSModel();
         void asset(PnlMat* path, const PnlMat* past, double currentDate, bool isMonitoringDate, int nbTimeSteps, double T, PnlRng* rng);
         void shiftAsset(PnlMat* shift_path, const PnlMat* path, int d, double fdStep, double currentDate, bool isMonitoringDate, double timeStep);
