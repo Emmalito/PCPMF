@@ -14,6 +14,7 @@ class BSModel
 
         BSModel(int nAssets_, double interestRate_, PnlMat* volatility_);
         void asset(PnlMat* path, const PnlMat* past, double currentDate, bool isMonitoringDate, int nbTimeSteps, double T, PnlRng* rng);
+        void asset2(PnlMat* path, const PnlMat* past, double currentDate, bool isMonitoringDate, int nbTimeSteps, double T, PnlRng* rng);
         void shiftAsset(PnlMat* shift_path, const PnlMat* path, int d, double fdStep, double currentDate, bool isMonitoringDate, double timeStep);
         void asset_ti(int i, PnlMat* simulatedMarket, double timeStep, PnlVect* normal_vect, int offset);
 };

@@ -14,7 +14,7 @@ BSModel::~BSModel() {
     pnl_mat_free(&volatility);
 }*/
 
-void BSModel::asset(PnlMat* path, const PnlMat* past, double currentDate, bool isMonitoringDate, int nbTimeSteps, double T, PnlRng* rng)
+void BSModel::asset2(PnlMat* path, const PnlMat* past, double currentDate, bool isMonitoringDate, int nbTimeSteps, double T, PnlRng* rng)
 {
     pnl_mat_set_subblock(path, past, 0, 0);
     if (currentDate < T)
@@ -40,6 +40,28 @@ void BSModel::asset(PnlMat* path, const PnlMat* past, double currentDate, bool i
         for (int i = start_index + 1; i <= nbTimeSteps; i++){
             pnl_vect_rng_normal(normal_vect, nAssets, rng);
             asset_ti(i, path, timeStep, normal_vect, offset);
+        }
+    }
+}
+
+void BSModel::asset(PnlMat* path, const PnlMat* past, double currentDate, bool isMonitoringDate, int nbTimeSteps, double T, PnlRng* rng)
+{
+    pnl_mat_set_subblock(path, past, 0, 0);
+    if (currentDate < T)
+    {
+        PnlVect* normal_vect = pnl_vect_create(nAssets);
+        pnl_vect_rng_normal(normal_vect, nAssets, rng);
+
+        if (!isMonitoringDate)
+        {
+            int k = (int) (currentDate * (double) nbTimeSteps / T);
+            double t_i = (double) (k + 1) * T / (double) nbTimeSteps;
+            asset_ti(past->m-1, path, t_i - currentDate, normal_vect, 1);
+        }
+        double timeStep = T / (double) nbTimeSteps;
+        for (int i = past->m; i <= nbTimeSteps; i++){
+            pnl_vect_rng_normal(normal_vect, nAssets, rng);
+            asset_ti(i, path, timeStep, normal_vect, 0);
         }
     }
 }
