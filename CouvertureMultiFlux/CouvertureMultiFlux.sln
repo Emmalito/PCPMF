@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.3.32825.248
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HedgingEngine", "HedgingEngine\HedgingEngine.csproj", "{80C95141-032E-4E30-A51F-6C3E99AA1BED}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FinancialApplication", "HedgingEngine\FinancialApplication.csproj", "{80C95141-032E-4E30-A51F-6C3E99AA1BED}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{E4EA2490-EB43-4D79-8B61-215C51F76E80}"
 EndProject

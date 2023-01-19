@@ -2,7 +2,7 @@
 using GrpcClientPricing;
 using MarketData;
 
-namespace HedgingEngine.ClientGrpc
+namespace FinancialApp.ClientGrpc
 {
     public class ClientGrpcPricing : IPricer
     {

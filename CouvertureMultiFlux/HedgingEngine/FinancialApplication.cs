@@ -2,8 +2,10 @@
 using ParameterInfo;
 using ParameterInfo.JsonUtils;
 using MarketDataGeneration;
+using FinancialApp.Hedger;
+using System.IO;
 
-namespace HedgingEngine
+namespace FinancialApp
 {
     public class FinancialApplication
     {
@@ -32,21 +34,25 @@ namespace HedgingEngine
             List <DataFeed> marketData = MarketDataReader.ReadDataFeeds(filename);
 
             //Hedging
-            Hedger hedger = new (testParameters, marketData[0], serverAddress);
+            IHedger hedger = new HedgerEngine (testParameters, marketData[0], serverAddress);
             hedger.Hedge(marketData.Skip(1).ToArray());
 
-            //CSV creation
-            Console.WriteLine("PF value :");
-            foreach(double val in hedger.PfValues)
+            //JSon creation
+            string JsonString = "";
+            OutputData output = new();
+            //using StreamWriter file = new("C:\\Users\\Emmalito\\OneDrive\\Bureau\\Projet_multi_flux\\PCPMF\\portfolio.json", false);
+            for (int idx = 0; idx < hedger.PfValues.Count; idx++)
             {
-                Console.WriteLine(val);
+                output.OutputDate = hedger.Dates[idx];
+                output.PortfolioValue = hedger.PfValues[idx];
+                output.Delta = hedger.Deltas[idx];
+                output.DeltaStdDev = hedger.DeltasStdDev[idx];
+                output.Price = hedger.OptionPrices[idx];
+                output.PriceStdDev = hedger.OptionPricesStdDev[idx];
+                //JsonString += JsonIO.ToJson(output);
+                Console.WriteLine($"Diff Pf value et Option price = {output.Price - output.PortfolioValue}");
             }
-            Console.WriteLine("Option price:");
-            foreach (double price in hedger.OptionPrices)
-            {
-                Console.WriteLine(price);
-            }
+            //file.Write(JsonString);
         }
-
     }
 }

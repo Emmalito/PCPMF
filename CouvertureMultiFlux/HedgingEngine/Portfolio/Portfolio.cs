@@ -1,6 +1,7 @@
 ﻿using MarketData;
+using MathNet.Numerics.Distributions;
 
-namespace HedgingEngine.Portfolio
+namespace FinancialApp.Portfolio
 {
     public class Portfolio
     {
@@ -15,9 +16,9 @@ namespace HedgingEngine.Portfolio
             PfValue = cash;
         }
 
-        public void UpdatePfValue(DataFeed dataFeed, double riskFreeRate)
+        public void UpdatePfValue(DataFeed dataFeed, double capitalizationTime, double riskFreeRate)
         {
-            Cash *= riskFreeRate;
+            Cash *= Math.Exp(riskFreeRate * capitalizationTime);
             PfValue = Cash + Utils.ScalarProduct(Deltas, dataFeed.SpotList.Values.ToArray());
         }
 

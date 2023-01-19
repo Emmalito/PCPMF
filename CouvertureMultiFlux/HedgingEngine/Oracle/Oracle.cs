@@ -1,4 +1,4 @@
-﻿namespace HedgingEngine.Oracle
+﻿namespace FinancialApp.Oracle
 {
     public interface IRebalanceOracle
     {
