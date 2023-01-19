@@ -9,16 +9,16 @@ namespace HedgingEngine
     {
         static void Main(string[] args)
         {
-            if (args.Length != 1)
+            /*if (args.Length != 1)
             {
                 Console.WriteLine("Exactly one argument is required.");
                 Console.WriteLine("Usage: ./financialapp test_parameters.json");
-            }
+            }*/
             //Server Adresse
-            string serverAddress = "http://0.0.0.0:50051";
+            string serverAddress = "http://localhost:50051";
 
             //Read the Test parameters
-            string jsonString = File.ReadAllText(args[1]);
+            string jsonString = File.ReadAllText("C:\\Users\\Emmalito\\OneDrive\\Bureau\\Projet_multi_flux\\test_params.json.txt");// args[1]);
             TestParameters testParameters = JsonIO.FromJson(jsonString);
             
             //Create and read the market data
@@ -37,6 +37,8 @@ namespace HedgingEngine
             hedger.Hedge(marketData.Skip(1).ToArray());
 
             //CSV creation
+            Console.WriteLine(hedger.PfValues);
+            Console.WriteLine(hedger.OptionPrices);
 
         }
 
