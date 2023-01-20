@@ -1,8 +1,0 @@
-{
-  "profiles": {
-    "FinancialApplication": {
-      "commandName": "Project",
-      "commandLineArgs": "C:\\Users\\Emmalito\\OneDrive\\Bureau\\Projet_multi_flux\\test_params.json.txt\r\nC:\\Users\\Emmalito\\OneDrive\\Bureau\\Projet_multi_flux\\PCPMF\\CouvertureMultiFlux\\HedgingEngine\\bin\\Debug\\net6.0\\marketData.csv\r\nC:\\Users\\Emmalito\\OneDrive\\Bureau\\Projet_multi_flux\\PCPMF\\output\\portfolio.json"
-    }
-  }
-}

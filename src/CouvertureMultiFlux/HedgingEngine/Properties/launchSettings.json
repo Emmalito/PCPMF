@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "FinancialApplication": {
+      "commandName": "Project",
+      "commandLineArgs": "C:\\Users\\Emmalito\\Downloads\\test-param1.json\r\nC:\\Users\\Emmalito\\Downloads\\MarketData.csv\r\nC:\\Users\\Emmalito\\OneDrive\\Bureau\\Equipe_12\\output\\portfolio_1.json"
+    }
+  }
+}
