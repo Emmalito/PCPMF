@@ -25,6 +25,8 @@ public:
     PnlRng* rng;
 
     BlackScholesPricer(nlohmann::json &jsonParams);
+    
+    // Constructeur pour les fichiers test_pricer*
     BlackScholesPricer(
         PnlMat* volatility_,
         PnlVect* paymentDates_,

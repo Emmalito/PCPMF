@@ -5,6 +5,13 @@ using namespace std;
 
 int main(int argc, char **argv)
 {
+    /**
+     * @brief Test du calcul du prix monte carlo de l'option BarrierMFOption (CondionalCall)
+     * 
+     * On se base sur les données de math_param_1.json.
+     * On demande veut le prix en t = 0.4, qui se trouve avant la 3e payment date.
+     */
+
     PnlMat *volatility = pnl_mat_create(4, 4);
     pnl_mat_set(volatility, 0, 0, 0.3);
     pnl_mat_set(volatility, 1, 0, 0.024);

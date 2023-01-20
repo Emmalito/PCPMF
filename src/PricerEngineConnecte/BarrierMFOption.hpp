@@ -10,6 +10,10 @@
 
 using namespace std;
 
+/**
+ * @brief Implémentation d'un conditional call
+ * 
+ */
 class BarrierMFOption : public Option {
     public:
         string type;    
