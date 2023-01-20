@@ -12,47 +12,43 @@ namespace FinancialApp
     {
         static void Main(string[] args)
         {
-            /*if (args.Length != 1)
+            if (args.Length != 3)
             {
-                Console.WriteLine("Exactly one argument is required.");
-                Console.WriteLine("Usage: ./financialapp test_parameters.json");
-            }*/
+                Console.WriteLine("Exactly three argument is required.");
+                Console.WriteLine("Usage: ./financialapp Path\\To\\test_parameters.json Path\\To\\marketData.csv Path\\To\\portfolio.json");
+            }
             //Server Adresse
             string serverAddress = "http://localhost:50051";
 
             //Read the Test parameters
-            string jsonString = File.ReadAllText("C:\\Users\\Emmalito\\OneDrive\\Bureau\\Projet_multi_flux\\test_params.json.txt");// args[1]);
+            string jsonString = File.ReadAllText(args[0]);
             TestParameters testParameters = JsonIO.FromJson(jsonString);
             
-            //Create and read the market data
-            MarketInfo marketInfo = new ();
-            double[] initialSpots = new double[4] { 8, 8.5, 9, 10 };
-            double[] trends = new double[4] { 0.12, 0.03, 0.09, 0.06 };
-            marketInfo.InitialSpots = initialSpots;
-            marketInfo.Trends = trends;
-            string filename = "marketData.csv";
-            ShareValueGenerator.Create(testParameters, marketInfo, filename);
-            List <DataFeed> marketData = MarketDataReader.ReadDataFeeds(filename);
+            //Read the market data
+            List <DataFeed> marketData = MarketDataReader.ReadDataFeeds(args[1]);
 
             //Hedging
             IHedger hedger = new HedgerEngine (testParameters, marketData[0], serverAddress);
             hedger.Hedge(marketData.Skip(1).ToArray());
 
             //JSon creation
-            string outputPath = "C:\\Users\\Emmalito\\OneDrive\\Bureau\\Projet_multi_flux\\PCPMF\\portfolio.json";
+            string outputPath = args[2];
             using (FileStream fs = File.Create(outputPath));
-            OutputData output = new();
+            List<OutputData> outputDatas = new();
             for (int idx = 0; idx < hedger.PfValues.Count; idx++)
             {
-                output.OutputDate = hedger.Dates[idx];
-                output.PortfolioValue = hedger.PfValues[idx];
-                output.Delta = hedger.Deltas[idx];
-                output.DeltaStdDev = hedger.DeltasStdDev[idx];
-                output.Price = hedger.OptionPrices[idx];
-                output.PriceStdDev = hedger.OptionPricesStdDev[idx];
-                Console.WriteLine($"Diff Pf value et Option price = {hedger.PfValues[idx] - hedger.OptionPrices[idx]}");
-                File.AppendAllText(outputPath, JsonIO.ToJson(output));
+                OutputData output = new()
+                {
+                    OutputDate = hedger.Dates[idx],
+                    PortfolioValue = hedger.PfValues[idx],
+                    Delta = hedger.Deltas[idx],
+                    DeltaStdDev = hedger.DeltasStdDev[idx],
+                    Price = hedger.OptionPrices[idx],
+                    PriceStdDev = hedger.OptionPricesStdDev[idx]
+                };
+                outputDatas.Add(output);
             }
+            File.AppendAllText(outputPath, JsonIO.ToJson(outputDatas));
         }
     }
 }
